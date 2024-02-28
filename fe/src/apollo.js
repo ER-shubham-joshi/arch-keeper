@@ -1,9 +1,11 @@
-// apollo.js
 import { ApolloClient, InMemoryCache } from '@apollo/client';
 
 const client = new ApolloClient({
-    uri: 'http://localhost:3001/graphql', // Replace with your GraphQL server URI
+    uri: 'http://localhost:3000/graphql', // Proxy endpoint
     cache: new InMemoryCache(),
+    fetchOptions: {
+        credentials: 'include'
+    },
 });
 
 export default client;

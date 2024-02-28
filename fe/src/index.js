@@ -9,11 +9,12 @@ import ErrorBoundary from "./components/ErrorBoundary";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <ErrorBoundary>
-    <ApolloProvider client={client}>
+
+  <ApolloProvider client={client}>
+    <ErrorBoundary>
       <App />
-    </ApolloProvider>
-  </ErrorBoundary>
+    </ErrorBoundary>
+  </ApolloProvider>
 );
 
 // If you want to start measuring performance in your app, pass a function

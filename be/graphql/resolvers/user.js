@@ -1,8 +1,19 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const { AuthenticationError, ApolloError } = require('apollo-server-express');
+const { ApolloError } = require('apollo-server-express');
 const { UserModel } = require('../../models/index');
 const { createDocument, getAllDocuments, getDocumentById, updateDocumentById, deleteDocumentById } = require('../../utils/crudUtils');
+
+const handleGenericError = (error, defaultMessage = 'An unexpected error occurred', defaultCode = 'INTERNAL_SERVER_ERROR') => {
+    if (error instanceof ApolloError) {
+        // If it's already an ApolloError, rethrow as is
+        throw error;
+    } else {
+        // If it's a non-specific error, create an ApolloError instance
+        console.error(error); // Log the error for debugging
+        throw new ApolloError(defaultMessage, defaultCode);
+    }
+};
 
 const userResolver = {
     Query: {
@@ -11,11 +22,10 @@ const userResolver = {
                 if (req.user.scope === 'admin') {
                     return await getDocumentById(UserModel, id);
                 } else {
-                    throw new AuthenticationError('Insufficient permissions');
+                    handleGenericError(null, 'Insufficient permissions', 'INSUFFICIENT_PERMISSIONS');
                 }
             } catch (error) {
-                console.error('Error fetching user:', error);
-                throw new ApolloError('Failed to fetch user', 'FETCH_USER_ERROR');
+                handleGenericError(error, 'Failed to fetch user', 'FETCH_USER_ERROR');
             }
         },
         getAllUsers: async (_, __, { req }) => {
@@ -23,49 +33,43 @@ const userResolver = {
                 if (req.user.scope === 'admin') {
                     return await getAllDocuments(UserModel);
                 } else {
-                    throw new AuthenticationError('Insufficient permissions');
+                    handleGenericError(null, 'Insufficient permissions', 'INSUFFICIENT_PERMISSIONS');
                 }
             } catch (error) {
-                console.error('Error fetching users:', error);
-                throw new ApolloError('Failed to fetch users', 'FETCH_USERS_ERROR');
+                handleGenericError(error, 'Failed to fetch users', 'FETCH_USERS_ERROR');
             }
         },
     },
     Mutation: {
         createUser: async (_, { name, email, password, scope, avatar, theme }, { req, res }) => {
             try {
-                // Generate a salt
                 const salt = await bcrypt.genSalt(10);
-
-                // Combine password and salt, then hash using bcrypt
                 const hashedPassword = await bcrypt.hash(password, salt);
                 const newUser = { name, email, password: hashedPassword, scope, avatar, theme };
                 const { id } = await createDocument(UserModel, newUser);
                 newUser.id = id;
                 return newUser;
             } catch (error) {
-                console.error('Error creating user:', error);
-                throw new ApolloError('Failed to create user', 'CREATE_USER_ERROR');
+                handleGenericError(error, 'Failed to create user', 'CREATE_USER_ERROR');
             }
         },
         login: async (_, { email, password }, { req, res }) => {
             try {
                 const user = await UserModel.findOne({ email });
                 if (!user) {
-                    throw new AuthenticationError('Invalid credentials');
+                    handleGenericError(null, 'Invalid credentials', 'INVALID_CREDENTIALS');
                 }
 
                 const isPasswordValid = await bcrypt.compare(password, user.password);
                 if (!isPasswordValid) {
-                    throw new AuthenticationError('Invalid credentials');
+                    handleGenericError(null, 'Invalid credentials', 'INVALID_CREDENTIALS');
                 }
 
                 const token = jwt.sign({ name: user.name, email: user.email, scope: user.scope, theme: user.theme }, process.env.JWT_SECRET, { expiresIn: '1h' });
                 res.cookie('authToken', token, { httpOnly: true, secure: true, sameSite: 'Lax' });
                 return { token };
             } catch (error) {
-                console.error('Error during login:', error);
-                throw new AuthenticationError('Failed to authenticate');
+                handleGenericError(error, 'Failed to authenticate', 'AUTHENTICATION_ERROR');
             }
         },
     },

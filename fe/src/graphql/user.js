@@ -12,13 +12,20 @@ const CREATE_USER = gql`
   `
 
 const LOGIN_USER = gql`
-  mutation LoginUser($email: String!, $password: String!) {
-    loginUser(email: $email, password: $password) {
-      id
-      name
-      email
+  mutation LOGIN_USER($email: String!, $password: String!) {
+    login(email: $email, password: $password) {
+      token
     }
   }
 `;
 
-export { CREATE_USER, LOGIN_USER };
+const GET_USER = gql`
+  query {
+    getAllUsers {
+      id
+      name
+    }
+  }
+`;
+
+export { CREATE_USER, LOGIN_USER, GET_USER };

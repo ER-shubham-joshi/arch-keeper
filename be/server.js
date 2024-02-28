@@ -12,17 +12,11 @@ const { authenticateUser } = require('./middlewares/auth');
 const cors = require('cors'); // Import the cors middleware
 const dotenv = require('dotenv');
 
-//Apply env
+// Load Env
 dotenv.config();
 
 // Set up Express app and create HTTP server
 const app = express();
-// Allow requests from Postman's origin (adjust as needed)
-// const corsOptions = {
-//   origin: 'https://www.postman.com',
-//   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-//   credentials: true,
-// };
 
 app.use(cors());
 app.use(helmet());
@@ -32,8 +26,14 @@ const limiter = rateLimit({
   max: 100, // limit each IP to 100 requests per windowMs
 });
 app.use(limiter);
-app.use(express.json({ limit: '10kb' })); // Use cors middleware
+app.use(express.json({ limit: '10kb' }));
 
+// app.use((req, res, next) => {
+//   res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
+//   res.header('Access-Control-Allow-Credentials', true);
+//   next();
+// });
+// Apply authentication middleware
 app.use(authenticateUser);
 
 const serverHttp = http.createServer(app);

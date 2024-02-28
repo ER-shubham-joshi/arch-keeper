@@ -26,7 +26,7 @@ const Signup = () => {
         if (data) {
             navigate('/login', { state: { userType } });
         }
-    }, [data]);
+    }, [data, navigate, userType]);
 
     // Handle form submission
     const onSubmit = (formData) => {

@@ -10,24 +10,22 @@ const Login = () => {
   const userType = location.state && location.state.userType;
   const navigate = useNavigate(); // Use useNavigate hook instead of useHistory
   const { register, handleSubmit, formState: { errors } } = useForm();
-  const [loader, setLoader] = useState(false);
   const [errorPopup, setErrorPopup] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  const [loginUser, { data, loading, error }] = useMutation(LOGIN_USER);
+  const [login, { loading }] = useMutation(LOGIN_USER, {
+    onError: (error) => {
+      console.error('ApolloError during registration:', error);
+      setErrorPopup(true);
+      setErrorMessage(error.message);
+    }
+  });
 
   const onSubmit = async (formData) => {
     try {
-      setLoader(true); // Show loader
-      await loginUser({ variables: formData });
-      setTimeout(() => {
-        setLoader(false); // Hide loader after a delay
-        // Redirect to dashboard upon successful login
-        navigate('/dashboard');
-      }, 3000); // 3 seconds delay
+      await login({ variables: formData });
+      navigate('/dashboard');
     } catch (error) {
-      setLoader(false); // Hide loader
-      setErrorPopup(true); // Show error popup
-      setErrorMessage(error.message); // Set error message
+      console.log(error);
     }
   };
 
@@ -90,7 +88,7 @@ const Login = () => {
         </div>
       )}
       {/* Loader */}
-      {loader && (
+      {loading && (
         <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center bg-gray-900 bg-opacity-50 z-50">
           <div className="animate-spin rounded-full h-20 w-20 border-t-8 border-b-8 border-gray-200"></div>
         </div>
