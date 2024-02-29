@@ -7,7 +7,6 @@ const LazyLanding = lazy(() => import('./components/Landing'));
 const LazyLogin = lazy(() => import('./components/Login'));
 const LazySignup = lazy(() => import('./components/Signup'));
 const LazyHome = lazy(() => import('./components/Home'));
-const Test = lazy(() => import('./components/Test'));
 
 // Route configurations
 const routes = [
