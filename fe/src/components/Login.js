@@ -4,6 +4,7 @@ import Header from './Header'; // Import Header component
 import { useForm } from 'react-hook-form';
 import { useMutation } from '@apollo/client';
 import { LOGIN_USER } from '../graphql/index';
+import Loader from './Loader';
 
 const Login = () => {
   const location = useLocation();
@@ -23,7 +24,7 @@ const Login = () => {
   const onSubmit = async (formData) => {
     try {
       await login({ variables: formData });
-      navigate('/dashboard');
+      navigate('/home');
     } catch (error) {
       console.log(error);
     }
@@ -88,11 +89,9 @@ const Login = () => {
         </div>
       )}
       {/* Loader */}
-      {loading && (
-        <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center bg-gray-900 bg-opacity-50 z-50">
-          <div className="animate-spin rounded-full h-20 w-20 border-t-8 border-b-8 border-gray-200"></div>
-        </div>
-      )}
+      {loading &&
+        <Loader />
+      }
     </div>
   );
 }

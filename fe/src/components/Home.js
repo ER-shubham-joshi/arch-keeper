@@ -1,29 +1,43 @@
-// Home.js
-
-import React from 'react';
+import React, { useState } from 'react';
 import Header from './Header';
-import { Link } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronCircleRight } from '@fortawesome/free-solid-svg-icons';
+import Clients from './Clients';
+import Projects from './Projects';
 
 const Home = () => {
-  return (
-    <div className="flex flex-col h-screen bg-gray-900 text-white">
-      <Header />
-      <div className="flex flex-col justify-center items-center flex-grow">
-        <div className="flex justify-center">
-          <Link to="/login" state={{ userType: "architect" }} className="cursor-pointer mx-4 w-52 h-52 p-8 bg-gray-800 text-white rounded-lg shadow-md flex flex-col items-center justify-center hover:bg-gray-700 transition duration-300">
-            <span>Architect Login</span>
-            <FontAwesomeIcon icon={faChevronCircleRight} className="text-white text-xl mt-2" />
-          </Link>
-          <Link to="/login" state={{ userType: "client" }} className="cursor-pointer mx-4 w-52 h-52 p-8 bg-gray-800 text-white rounded-lg shadow-md flex flex-col items-center justify-center hover:bg-gray-700 transition duration-300">
-            <span>Client Login</span>
-            <FontAwesomeIcon icon={faChevronCircleRight} className="text-white text-xl mt-2" />
-          </Link>
+    const [selectedTab, setSelectedTab] = useState('Clients');
+
+    return (
+        <div className="flex flex-col min-h-screen bg-gray-900 text-white">
+            {/* Header */}
+            <Header />
+
+            {/* Tab Section */}
+            <div className="bg-gray-800 bg-opacity-50 backdrop-filter backdrop-blur-md shadow-lg py-4 pl-4">
+                <ul className="flex flex-col md:flex-row md:space-x-4">
+                    <li
+                        className={`cursor-pointer hover:bg-gray-700 p-2 rounded-md ${selectedTab === 'Clients' && 'bg-gray-700'
+                            }`}
+                        onClick={() => setSelectedTab('Clients')}
+                    >
+                        Clients
+                    </li>
+                    <li
+                        className={`cursor-pointer hover:bg-gray-700 p-2 rounded-md ${selectedTab === 'Projects' && 'bg-gray-700'
+                            }`}
+                        onClick={() => setSelectedTab('Projects')}
+                    >
+                        Projects
+                    </li>
+                </ul>
+            </div>
+
+            {/* Detail Section */}
+            <div className="flex-grow">
+                {selectedTab === 'Clients' && <Clients />}
+                {selectedTab === 'Projects' && <Projects />}
+            </div>
         </div>
-      </div>
-    </div>
-  );
-}
+    );
+};
 
 export default Home;
