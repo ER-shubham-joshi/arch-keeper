@@ -7,6 +7,7 @@ const LazyLanding = lazy(() => import('./components/Landing'));
 const LazyLogin = lazy(() => import('./components/Login'));
 const LazySignup = lazy(() => import('./components/Signup'));
 const LazyHome = lazy(() => import('./components/Home'));
+const LazyProject = lazy(() => import('./views/Project'));
 
 // Route configurations
 const routes = [
@@ -14,6 +15,7 @@ const routes = [
   { path: '/login', component: LazyLogin },
   { path: '/signup', component: LazySignup },
   { path: '/home', component: LazyHome },
+  { path: '/project', component: LazyProject },
   // Add more routes as needed
 ];
 

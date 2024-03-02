@@ -19,7 +19,7 @@ const LOGIN_USER = gql`
   }
 `;
 
-const GET_USER = gql`
+const GET_ALL_USERS = gql`
   query {
     getAllUsers {
       id
@@ -28,4 +28,4 @@ const GET_USER = gql`
   }
 `;
 
-export { CREATE_USER, LOGIN_USER, GET_USER };
+export { CREATE_USER, LOGIN_USER, GET_ALL_USERS };

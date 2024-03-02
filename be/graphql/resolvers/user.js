@@ -19,7 +19,7 @@ const userResolver = {
     Query: {
         getUser: async (_, { id }, { req }) => {
             try {
-                if (req.user.scope === 'admin') {
+                if (req.user.scope[0] === 'admin') {
                     return await getDocumentById(UserModel, id);
                 } else {
                     handleGenericError(null, 'Insufficient permissions', 'INSUFFICIENT_PERMISSIONS');
@@ -30,7 +30,7 @@ const userResolver = {
         },
         getAllUsers: async (_, __, { req }) => {
             try {
-                if (req.user.scope === 'admin') {
+                if (req.user.scope[0] === 'admin') {
                     return await getAllDocuments(UserModel);
                 } else {
                     handleGenericError(null, 'Insufficient permissions', 'INSUFFICIENT_PERMISSIONS');
