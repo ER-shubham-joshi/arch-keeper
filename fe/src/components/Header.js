@@ -5,7 +5,7 @@ import { faHome } from '@fortawesome/free-solid-svg-icons';
 
 const Header = () => {
     return (
-        <header className="mx-auto w-screen flex items-center justify-around p-4 bg-gray-800 bg-opacity-90 backdrop-filter backdrop-blur-md border-b-2 border-gray-700 h-1/5">
+        <header className="mx-auto w-screen flex items-center justify-around p-4 bg-gray-800 bg-opacity-90 backdrop-filter backdrop-blur-md border-b-2 border-gray-700 h-1/8">
             <div>
                 <Link to="/" className="text-white">
                     <FontAwesomeIcon icon={faHome} className="w-8 h-8" />
