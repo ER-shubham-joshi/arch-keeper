@@ -76,12 +76,8 @@ const Project = () => {
                                     </div>
                                 )}
                                 <div className='flex space-x-2'>
-                                    <button type='submit' className='bg-gray-800 text-white hover:bg-gray-700 rounded-full p-2 focus:outline-none'>
-                                        <FontAwesomeIcon icon={faSave} />
-                                    </button>
-                                    <button type='button' className='bg-gray-800 text-white hover:bg-gray-700 rounded-full p-2 focus:outline-none' onClick={cancelCategory}>
-                                        <FontAwesomeIcon icon={faTimes} />
-                                    </button>
+                                    <Button type='submit' borderColor='green-900' icon={faSave} />
+                                    <Button borderColor='red-900' icon={faTimes} onClick={cancelCategory} />
                                 </div>
                             </form>
                         ) : <Button borderColor='white' icon={faPlus} onClick={addCategory} />}

@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHome } from '@fortawesome/free-solid-svg-icons';
+import Avatar from './Avatar'
 
 const Header = () => {
     return (
@@ -15,7 +16,7 @@ const Header = () => {
                 <h1 className="animate-pulse text-4xl font-semibold text-white">ARCH KEEPER</h1>
             </div>
             <div>
-                User
+                <Avatar />
             </div> {/* You can add any other elements you want on the right side */}
         </header >
     );
