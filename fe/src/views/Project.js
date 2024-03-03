@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import Header from '../components/Header';
 import { useForm } from 'react-hook-form';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faSave, faTrash, faTimes, faCheck } from '@fortawesome/free-solid-svg-icons';
 import Button from '../components/Button';
 import Dialog from '../components/Dialog';

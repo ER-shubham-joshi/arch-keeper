@@ -15,7 +15,7 @@ const Login = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [login, { loading }] = useMutation(LOGIN_USER, {
     onError: (error) => {
-      console.error('ApolloError during registration:', error);
+      console.error('ApolloError during login:', error);
       setErrorPopup(true);
       setErrorMessage(error.message);
     }
@@ -23,8 +23,8 @@ const Login = () => {
 
   const onSubmit = async (formData) => {
     try {
-      await login({ variables: formData });
-      navigate('/home');
+      const data = await login({ variables: formData });
+      data?.data && navigate('/home');
     } catch (error) {
       console.log(error);
     }
