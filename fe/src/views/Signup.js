@@ -1,3 +1,4 @@
+//Signup.js
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom'; // Import useNavigate instead of useHistory
 import Header from '../components/Header'; // Import Header component

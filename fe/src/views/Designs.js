@@ -5,6 +5,7 @@ import { faPlus, faSave, faTrash, faTimes, faCheck, faUpload, faFilePdf } from '
 import Button from '../components/Button';
 import Dialog from '../components/Dialog';
 import FileViewer from '../components/FileViewer';
+import SearchBar from '../components/SearchBar'
 
 const Designs = () => {
     const { register, handleSubmit, reset, formState: { errors } } = useForm();
@@ -13,9 +14,9 @@ const Designs = () => {
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [showConfirmationDialog, setShowConfirmationDialog] = useState(false);
     const [hoveredCategory, setHoveredCategory] = useState(null);
-    const [files, setFiles] = useState([]);
     const [isOpen, setIsOpen] = useState(false);
     const [selectedFile, setSelectedFile] = useState({});
+    const [searchTerm, setSearchTerm] = useState(''); // State for search term
 
     const handleFileChange = (event) => {
         const fileList = event.target.files;
@@ -40,9 +41,9 @@ const Designs = () => {
                 };
 
                 // Check if the current file has the same name as any existing file
-                const isDuplicate = files.some(categoryFiles => {
-                    if (selectedCategory.name === categoryFiles.category) {
-                        return categoryFiles.files.some(existingFile => existingFile.name === file.name);
+                const isDuplicate = categories.some(category => {
+                    if (selectedCategory.name === category.name) {
+                        return category.files.some(existingFile => existingFile.name === file.name);
                     }
                     return false;
                 });
@@ -61,25 +62,15 @@ const Designs = () => {
         }
 
         // Update state with valid files
-        setFiles(prevFiles => {
-            const updatedFiles = [...prevFiles];
-            let isCategoryMatched = false;
+        setCategories(prevCategories => {
+            const updatedCategories = [...prevCategories];
 
             // Check if the selectedCategory exists in prevFiles
-            updatedFiles.forEach(categoryFiles => {
-                if (categoryFiles.category === selectedCategory.name) {
-                    isCategoryMatched = true;
-                    categoryFiles.files.push(...validFiles);
+            updatedCategories.forEach(category => {
+                if (category.name === selectedCategory.name) {
+                    category.files.push(...validFiles);
                 }
             });
-
-            // If selectedCategory doesn't exist, add it with validFiles
-            if (!isCategoryMatched) {
-                updatedFiles.push({
-                    category: selectedCategory.name,
-                    files: [...validFiles]
-                });
-            }
 
             // Clear the file input after upload
             event.target.value = '';
@@ -87,7 +78,7 @@ const Designs = () => {
             console.log('Uploaded Files:', validFiles);
             console.log('Duplicate Files:', duplicateFiles);
 
-            return updatedFiles;
+            return updatedCategories;
         });
     };
 
@@ -101,7 +92,7 @@ const Designs = () => {
     };
 
     const onSubmit = (data) => {
-        const newCategory = { name: data.categoryName, id: Date.now() };
+        const newCategory = { name: data.categoryName, id: Date.now(), files: [] };
         setCategories((prevCategories) => [...prevCategories, newCategory]);
         setAddingCategory(false);
         reset();
@@ -146,6 +137,7 @@ const Designs = () => {
     };
 
     const closeModal = () => {
+        setSelectedFile(null)
         setIsOpen(false)
     };
 
@@ -154,7 +146,10 @@ const Designs = () => {
         openModal()
     }
 
-
+    // Function to handle search term change
+    const handleSearchTermChange = (event) => {
+        setSearchTerm(event?.target?.value);
+    };
 
     return (
         <div className='flex flex-grow'>
@@ -211,34 +206,36 @@ const Designs = () => {
                         <div className="flex justify-start">
                             <div className="bg-gray-800 hover:bg-gray-700 text-white rounded-lg p-4 mx-4">
                                 <label htmlFor="upload-input" className="cursor-pointer flex items-center justify-center">
-                                    <FontAwesomeIcon className="mr-2" icon={faUpload} />
-                                    Upload File
+                                    <FontAwesomeIcon icon={faUpload} />
                                     <input id="upload-input" type="file" className='hidden' multiple onChange={handleFileChange} />
                                 </label>
                             </div>
+                            <SearchBar onSearch={handleSearchTermChange} />
                         </div>
                         <div className="flex justify-start flex-wrap">
-                            {files.map(categoryFiles => {
-                                if (categoryFiles.category === selectedCategory.name) {
-                                    return categoryFiles.files.map(file => (
-                                        <div key={file.id} className="cursor-pointer hover:bg-gray-700 mx-4 my-4 w-52 h-52 bg-gray-800 text-white rounded-lg shadow-md flex flex-col items-center justify-center" onClick={() => handleFileClick(file)}>
-                                            <div className="h-full w-full relative rounded-t-lg overflow-hidden">
-                                                {file.type === 'image' ? (
-                                                    <img src={file.fileData} alt={file.name} className="h-full w-full object-cover" />
-                                                ) : (
-                                                    <div className="flex items-center justify-center h-full w-full">
-                                                        <FontAwesomeIcon icon={faFilePdf} className="text-5xl" />
-                                                    </div>
-                                                )}
+                            {categories.map(category => {
+                                if (category.name === selectedCategory.name) {
+                                    return category.files
+                                        .filter(file => file?.name?.toLowerCase()?.includes(searchTerm?.toLowerCase())) // Filtering files based on search term
+                                        .map(file => (
+                                            <div key={file.id} className="cursor-pointer hover:bg-gray-700 mx-4 my-4 w-52 h-52 bg-gray-800 text-white rounded-lg shadow-md flex flex-col items-center justify-center" onClick={() => handleFileClick(file)}>
+                                                <div className="h-full w-full relative rounded-t-lg overflow-hidden">
+                                                    {file.type === 'image' ? (
+                                                        <img src={file.fileData} alt={file.name} className="h-full w-full object-cover" />
+                                                    ) : (
+                                                        <div className="flex items-center justify-center h-full w-full">
+                                                            <FontAwesomeIcon icon={faFilePdf} className="text-5xl" />
+                                                        </div>
+                                                    )}
+                                                </div>
+                                                <div className="h-10 w-full flex items-center justify-center">{file.name}</div>
                                             </div>
-                                            <div className="h-10 w-full flex items-center justify-center">{file.name}</div>
-                                        </div>
-                                    ));
+                                        ));
                                 }
                                 return null;
                             })}
                         </div>
-                        <FileViewer isOpen={isOpen} closeModal={closeModal} fileUrl={selectedFile?.fileData} />
+                        <FileViewer isOpen={isOpen} closeModal={closeModal} fileUrl={selectedFile?.fileData} fileName={selectedFile?.name} />
 
                     </div>
                 )}

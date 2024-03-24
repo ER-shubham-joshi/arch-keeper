@@ -2,48 +2,50 @@
 import React, { useState } from 'react';
 
 const ChatBox = () => {
-    const [messages, setMessages] = useState([]);
-    const [newMessage, setNewMessage] = useState('');
+    const [comments, setComments] = useState([]);
+    const [newComment, setNewComment] = useState('');
+    const [username, setUsername] = useState('Unknown');
 
-    const handleMessageSend = () => {
-        if (newMessage.trim() === '') return;
-        const updatedMessages = [...messages, { text: newMessage, sender: 'user' }];
-        setMessages(updatedMessages);
-        setNewMessage('');
-    };
+    const handleCommentSubmit = () => {
+        if (newComment.trim() === '') return;
 
-    const handleKeyPress = (event) => {
-        if (event.key === 'Enter') {
-            handleMessageSend();
-        }
+        // Create a new comment object with the username and comment content
+        const comment = { username, text: newComment };
+
+        // Update the comments state with the new comment
+        setComments([...comments, comment]);
+
+        // Clear the input field
+        setNewComment('');
     };
 
     return (
-        <div className="flex flex-col w-full h-full">
-            <div className="flex-1 px-4 py-2 overflow-y-auto">
-                {messages.map((message, index) => (
-                    <div key={index} className={`flex mb-2 ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
-                        <div className={`max-w-md rounded-lg ${message.sender === 'user' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'}`}>
-                            <div className="px-4 py-2">{message.text}</div>
-                        </div>
-                    </div>
-                ))}
-            </div>
-            <div className="flex justify-between items-center px-4 py-2 border-t border-gray-200">
+        <div className="mt-4">
+            {/* Comment Input */}
+            <div className="flex items-center border border-gray-300 rounded-lg p-2 mb-2 bg-gray-800 text-white">
                 <input
                     type="text"
-                    className="flex-1 mr-2 border rounded-full px-4 py-2 focus:outline-none"
-                    placeholder="Type a message..."
-                    value={newMessage}
-                    onChange={(e) => setNewMessage(e.target.value)}
-                    onKeyPress={handleKeyPress}
+                    className="flex-1 mr-2 border-none focus:outline-none bg-transparent text-white"
+                    placeholder="Add a comment..."
+                    value={newComment}
+                    onChange={(e) => setNewComment(e.target.value)}
                 />
                 <button
-                    className="bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600 focus:outline-none"
-                    onClick={handleMessageSend}
+                    className="text-blue-500 font-semibold"
+                    onClick={handleCommentSubmit}
                 >
-                    Send
+                    Post
                 </button>
+            </div>
+
+            {/* Comment List */}
+            <div className="space-y-4">
+                {comments.map((comment, index) => (
+                    <div key={index} className="flex items-center space-x-2 text-white"> {/* Set text color to light */}
+                        <span className="font-semibold">{comment.username}:</span>
+                        <span>{comment.text}</span>
+                    </div>
+                ))}
             </div>
         </div>
     );
