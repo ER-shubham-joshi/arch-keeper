@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Header from './Header';
+import Header from '../components/Header';
 import Clients from './Clients';
 import Projects from './Projects';
 
@@ -7,7 +7,7 @@ const Home = () => {
     const [selectedTab, setSelectedTab] = useState('Clients');
 
     return (
-        <div className="flex flex-col min-h-screen bg-gray-900 text-white">
+        <div className="flex flex-col min-h-screen min-w-screen bg-gray-900 text-white">
             {/* Header */}
             <Header />
 

@@ -1,14 +1,14 @@
 // Landing.js
 
 import React from 'react';
-import Header from './Header';
+import Header from '../components/Header';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronCircleRight } from '@fortawesome/free-solid-svg-icons';
 
 const Landing = () => {
   return (
-    <div className="flex flex-col h-screen bg-gray-900 text-white">
+    <div className="flex flex-col min-h-screen min-w-screen bg-gray-900 text-white">
       <Header />
       <div className="flex flex-col justify-center items-center flex-grow">
         <div className="flex justify-center">

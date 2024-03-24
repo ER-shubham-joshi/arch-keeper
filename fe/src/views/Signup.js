@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom'; // Import useNavigate instead of useHistory
-import Header from './Header'; // Import Header component
+import Header from '../components/Header'; // Import Header component
 import { useForm } from 'react-hook-form';
 import { useMutation } from '@apollo/client';
 import { CREATE_USER } from '../graphql/index';
-import Loader from './Loader';
+import Loader from '../components/Loader';
 
 const Signup = () => {
     const location = useLocation();

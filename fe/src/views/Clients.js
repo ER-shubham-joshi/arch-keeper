@@ -1,41 +1,75 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUserPlus, faSave, faTimesCircle } from '@fortawesome/free-solid-svg-icons';
-import Button from './Button';
+import { faUserPlus, faSave, faTimesCircle, faTrash, faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
+import Button from '../components/Button';
 import { useForm } from 'react-hook-form';
+import Dialog from '../components/Dialog';
 
 const Clients = () => {
     const [showAddForm, setShowAddForm] = useState(false);
     const [clients, setClients] = useState([]);
     const { register, handleSubmit, formState: { errors }, reset } = useForm();
+    const [hoveredClient, setHoveredClient] = useState(null);
+    const [showConfirmationDialog, setShowConfirmationDialog] = useState(false);
+    const [selectClient, setSelectedClient] = useState(null);
+
+    const setClientOnClickDelete = (event, client) => {
+        event.preventDefault();
+        setSelectedClient(client);
+        openConfirmationDialog();
+    };
+
+    const confirmDeleteClient = () => {
+        setClients(clients.filter((clnt) => clnt.id !== selectClient.id));
+        closeConfirmationDialog();
+    };
+
+    const openConfirmationDialog = () => {
+        setShowConfirmationDialog(true);
+    };
+
+    const closeConfirmationDialog = () => {
+        setShowConfirmationDialog(false);
+    };
+
+
+    const handleMouseEnter = (client) => {
+        setHoveredClient(client);
+    };
+
+    const handleMouseLeave = () => {
+        setHoveredClient(null);
+    };
 
     const onSubmit = async (formData) => {
         try {
             const newClient = {
-                id: Date.now(), // Generate a unique ID (you may want to use a more reliable method)
+                id: Date.now(),
                 name: formData.clientName,
                 email: formData.clientEmail
             };
-            setClients([...clients, newClient]); // Add new client to clients array
-            setShowAddForm(false); // Hide the add client form
-            reset(); // Reset the form fields
+            setSelectedClient(null);
+            setClients([...clients, newClient]);
+            setShowAddForm(false);
+            reset();
         } catch (error) {
             console.error('Error creating client:', error);
         }
     };
 
     const handlePlusClick = () => {
-        setShowAddForm(true); // Show the add client form
+        setShowAddForm(true);
     };
 
     const handleCloseClick = () => {
-        setShowAddForm(false); // Hide the add client form
-        reset(); // Reset the form fields
+        setShowAddForm(false);
+        reset();
     };
 
     return (
         <div className="p-4">
-            <div className="flex flex-wrap justify-start"> {/* Adjusted justify-start */}
+            <div className="flex flex-wrap justify-start">
                 {!showAddForm ? (
                     <div
                         className={`cursor-pointer mx-4 my-4 w-52 h-52 bg-gray-800 text-white rounded-lg shadow-md flex flex-col items-center justify-center relative transition duration-500 transform`}
@@ -62,14 +96,29 @@ const Clients = () => {
                     </div>
                 )}
 
-                {/* Render tiles for each user */}
                 {clients.map((client) => (
-                    <div key={client.id} className="cursor-pointer mx-4 my-4 w-52 h-52 p-8 bg-gray-800 text-white rounded-lg shadow-md flex flex-col items-center justify-center hover:bg-gray-700 transition duration-300">
-                        <span>{client.name}</span>
-                    </div>
+                    <Link
+                        key={client.id}
+                        to={`/client/${client.id}`}
+                        onMouseEnter={() => handleMouseEnter(client)}
+                        onMouseLeave={handleMouseLeave}
+                        className="cursor-pointer mx-4 my-4 w-52 h-52 p-8 bg-gray-800 text-white rounded-lg shadow-md flex flex-col items-center justify-center text-center hover:bg-gray-700 transition duration-300"
+                    >
+                        <div>{client.name}</div>
+                        <div>
+                            {hoveredClient?.id === client.id && (
+                                <Button borderColor='red' icon={faTrash} onClick={(event) => setClientOnClickDelete(event, client)} />
+                            )}
+                        </div>
+                    </Link>
                 ))}
+                <div className={`${showConfirmationDialog ? '' : 'hidden'}`}>
+                    {showConfirmationDialog && (
+                        <Dialog buttonFunc1={confirmDeleteClient} buttonFunc2={closeConfirmationDialog} buttonIcon1={faCheck} buttonIcon2={faTimes} dialogText={`Are you sure you want to delete this client "${selectClient?.name}" ? All the data related to this client will be deleted.`} buttonBorderColor1='red' buttonBorderColor2='green' />
+                    )}
+                </div>
             </div>
-        </div>
+        </div >
     );
 };
 
