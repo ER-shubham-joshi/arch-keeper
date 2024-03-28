@@ -148,7 +148,7 @@ const Designs = () => {
 
     // Function to handle search term change
     const handleSearchTermChange = (event) => {
-        setSearchTerm(event?.target?.value);
+        setSearchTerm(event?.target?.value || '');
     };
 
     return (
