@@ -22,7 +22,7 @@ const ProjectRequirements = () => {
                         <textarea {...register('clientBackground', { required: true })} className="bg-gray-100 text-gray-800 px-4 py-2 mb-4 rounded-md w-full" placeholder="Enter client background"></textarea>
                         {errors.clientBackground && <span className="text-red-500 block mb-2">This field is required</span>}
 
-                        <label className="block mb-2">W orked with Architect Before?</label>
+                        <label className="block mb-2">Worked with Architect Before?</label>
                         <div className='mb-2'>
                             <input type="radio" value="yes" {...register('workedWithArchitect', { required: true })} className="mr-2" /> Yes
                             <input type="radio" value="no" {...register('workedWithArchitect', { required: true })} className="ml-4 mr-2" /> No
