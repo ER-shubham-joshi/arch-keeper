@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Header from '../components/Header';
-import Requirements from './Requirements';
+import ProjectRequirements from './ProjectRequirements';
 import Designs from './Designs';
 import Finances from './Finances';
 
@@ -40,8 +40,8 @@ const ProjectDetail = ({ projectId }) => {
             </div>
 
             {/* Detail Section */}
-            <div className='flex flex-grow'>
-                {selectedTab === 'Requirements' && <Requirements />}
+            <div className='flex flex-grow justify-center items-center'>
+                {selectedTab === 'Requirements' && <ProjectRequirements />}
                 {selectedTab === 'Designs' && <Designs />}
                 {selectedTab === 'Finances' && <Finances />}
             </div>
